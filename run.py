@@ -33,7 +33,9 @@ def get_sales_data():
         if validate_data(sales_data):
             print("Data is valid")
             break
+
     return sales_data
+
 
 def validate_data(values):
     """
@@ -50,7 +52,9 @@ def validate_data(values):
     except ValueError as e:
         print(f"Invalid data: {e}, please try again. \n")
         return False
+
     return True
+
 
 def update_sales_worksheet(data):
     """
@@ -61,7 +65,8 @@ def update_sales_worksheet(data):
     sales_worksheet.append_row(data)
     print("Sales worksheet updated successfully.\n")
 
-def calculate_surplas_data(sales_row):
+
+def calculate_surplus_data(sales_row):
     """
     Compare sales with stock and calculate the surplas for each type.
 
@@ -69,10 +74,17 @@ def calculate_surplas_data(sales_row):
     - Positive surplus indicates waste
     - Negative surplas indicates extra made when stock was sold out.
     """
-    print("Calculating surplas data......\n")
+    print("Calculating surplus data......\n")
     stock = SHEET.worksheet("stock").get_all_values()
     stock_row = stock[-1]
-    pprint(stock_row)
+
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock) - sales
+        surplus_data.append(surplus)
+
+    return surplus_data
+
 
 def main():
     """
@@ -81,7 +93,10 @@ def main():
     data = get_sales_data()
     sales_data = [int(num) for num in data]
     update_sales_worksheet(sales_data)
-    calculate_surplas_data(sales_data)
+    new_surplus_data = calculate_surplus_data(sales_data)
+    print(new_surplus_data)
+    
+
 
 print("Welcome to love sandwiches Data Automation")
 main()
